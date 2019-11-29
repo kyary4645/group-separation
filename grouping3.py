@@ -12,7 +12,7 @@ xl_df["score"] = float()
 for i in range(0,54):
   xl_df.iloc[i,4] = ((df.iloc[i,0] - df.iloc[54,0])**2)+((df.iloc[i,1] - df.iloc[54,1])**2)+((df.iloc[i,2] - df.iloc[54,2])**2)
 
-s_df = xl_df.sort_values("score")
+s_df = xl_df.sort_values("score", ascending=False)
 drop_col = ['氏名', 'HTML/CSS', 'Rails', 'JavaScript/jquery', 'score']
 d_df = s_df.drop(drop_col, axis=1)
 d_df["class"] = float()
