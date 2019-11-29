@@ -1,6 +1,8 @@
 from simanneal import Annealer
 import random
 import pandas as pd
+import matplotlib
+import matplotlib.pyplot as plt
 
 class GroupingProblem(Annealer):
 
@@ -33,7 +35,7 @@ if __name__ == '__main__':
   df = xl_df.iloc[:, 1:]
   xl_df['total'] = df.sum(axis=1)
 
-  teams = ['A','B','C','D','E','F','G','H','I','J','K']
+  teams = [1,2,3,4,5,6,7,8,9,10,11]
   members = xl_df.loc[:,"氏名"].values.tolist()
   skills = ['HTML/CSS', 'Rails', 'JavaScript/jquery']
   scores = df.values.tolist()
@@ -51,9 +53,20 @@ if __name__ == '__main__':
   prob = GroupingProblem(init_state)
   prob.steps = 100000
   prob.copy_strategy = "deepcopy"
-  prob.anneal()
+  prob.anneal() # 焼きなましの実行
+  g_df = pd.DataFrame()
 
   for i,s in enumerate(prob.state):
-    print(members[i], teams[s.index(1)])
+    g_df.loc[i,0] = teams[s.index(1)]
+  
+  df_concat = pd.concat([xl_df, g_df], axis=1)
+  df_concat_new = df_concat.rename(columns={0: 'team'})
+  s_df = df_concat_new.sort_values('team')
+  m_df = df_concat_new.groupby('team').mean()
+  s_df.to_html('grouping4.html')
+  m_df.to_html('average4.html')
 
+  m_df.plot.bar(figsize=(10,8),subplots=True,legend=False)
+  plt.show()
+  
 
