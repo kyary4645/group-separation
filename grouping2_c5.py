@@ -45,4 +45,5 @@ ax.plot(c3_df["HTML/CSS"],c3_df["Rails"],c3_df["JavaScript/jquery"],marker="o", 
 ax.plot(c4_df["HTML/CSS"],c4_df["Rails"],c4_df["JavaScript/jquery"],marker="o", linestyle="None", c="lawngreen")
 ax.plot(c5_df["HTML/CSS"],c5_df["Rails"],c5_df["JavaScript/jquery"],marker="o", linestyle="None", c="navy")
 
+plt.savefig('grouping2_c5.png') 
 plt.show()

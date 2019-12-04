@@ -42,4 +42,5 @@ for i in range(10):
 
 kmeans_df = pd.DataFrame({'se':se, 'sse':sse, 'inertia':inertia})
 kmeans_df.plot(figsize=(10,8))
+plt.savefig('grouping2_test.png')
 plt.show()

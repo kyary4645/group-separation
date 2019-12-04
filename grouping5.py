@@ -3,6 +3,10 @@ import random
 import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
+from sklearn.cluster import KMeans
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+import seaborn as sns
 
 class GroupingProblem(Annealer):
 
@@ -22,28 +26,26 @@ class GroupingProblem(Annealer):
     v = 0
     nu = sum(sum(b[i] * self.state[i][j] for i in range(nmembers)) for j in range(nteams)) / nteams
     for j in range(nteams):
-      mu_j = sum(sum(scores[i][k] * self.state[i][j] for i in range(nmembers)) for k in range(nskills)) / nskills
-      for k in range(nskills):
-        v += abs(sum(scores[i][k] * self.state[i][j] for i in range(nmembers)) - mu_j)
-      v += 1.5 * abs(sum(b[i] * self.state[i][j] for i in range(nmembers)) - nu)
+      mu_j = sum(scores[i] * self.state[i][j] for i in range(nmembers))
+      v += abs(sum(scores[i] * self.state[i][j] for i in range(nmembers)) - mu_j) + 1.5 * abs(sum(b[i] * self.state[i][j] for i in range(nmembers)) - nu)
     return v
-  
 
 if __name__ == '__main__':
   # データの呼び出し
   xl_df = pd.read_excel('test_data.xlsx')
   df = xl_df.iloc[:, 1:]
-  xl_df['total'] = df.sum(axis=1)
+  kmeans = KMeans(n_clusters=5)
+  xl_df["class"] = kmeans.fit_predict(df)
 
   teams = [1,2,3,4,5,6,7,8,9,10,11]
   members = xl_df.loc[:,"氏名"].values.tolist()
-  skills = ['HTML/CSS', 'Rails', 'JavaScript/jquery']
-  scores = df.values.tolist()
+  skills = ['class']
+  scores = xl_df.loc[:,"class"].values.tolist()
 
   nteams = len(teams)
   nmembers = len(members)
   nskills = len(skills)
-  b = [sum(ai) for ai in scores]
+  b = [ai for ai in scores]
 
   # 初期割り当て
   init_state = [[0 for j in range(nteams)] for i in range(nmembers)]
@@ -54,8 +56,6 @@ if __name__ == '__main__':
   prob.steps = 200000
   prob.copy_strategy = "deepcopy"
   prob.anneal() # 焼きなましの実行
-
-
   g_df = pd.DataFrame()
 
   for i,s in enumerate(prob.state):
@@ -65,10 +65,10 @@ if __name__ == '__main__':
   df_concat_new = df_concat.rename(columns={0: 'team'})
   s_df = df_concat_new.sort_values('team')
   m_df = df_concat_new.groupby('team').mean()
-  s_df.to_html('grouping4.html')
-  m_df.to_html('average4.html')
+  s_df.to_html('grouping5.html')
+  m_df.to_html('average5.html')
 
   m_df.plot.bar(figsize=(10,8),subplots=True,legend=False)
-  plt.savefig('grouping4.png') 
+  plt.savefig('grouping5.png') 
   
 

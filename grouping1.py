@@ -25,4 +25,4 @@ l_df.to_html('grouping1.html')
 m_l_df.to_html('average1.html')
 
 m_l_df.plot.bar(figsize=(10,8),subplots=True,legend=False)
-plt.show()
+plt.savefig('grouping1.png') 
